@@ -16,11 +16,13 @@ package builder
 
 import (
 	"fmt"
+	"time"
+	"unsafe"
+
 	"github.com/hyperjumptech/grule-rule-engine/ast"
 	"github.com/hyperjumptech/grule-rule-engine/logger"
 	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
-	"time"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	antlr2 "github.com/hyperjumptech/grule-rule-engine/antlr"
@@ -126,6 +128,16 @@ func (builder *RuleBuilder) BuildRuleFromResources(name, version string, resourc
 	return nil
 }
 
+func toString(b []byte) string {
+	// unsafe.SliceData relies on cap whereas we want to rely on len
+	if len(b) == 0 {
+		return ""
+	}
+	// Copied from go 1.20.1 strings.Builder.String
+	// https://github.com/golang/go/blob/202a1a57064127c3f19d96df57b9f9586145e21c/src/strings/builder.go#L48
+	return unsafe.String(unsafe.SliceData(b), len(b))
+}
+
 // BuildRuleFromResource will load rules from a single resource. It will return an error if it encounter an error on the specified resource.
 func (builder *RuleBuilder) BuildRuleFromResource(name, version string, resource pkg.Resource) error {
 	// save the starting time, we need to see the loading time in debug log
@@ -139,7 +151,7 @@ func (builder *RuleBuilder) BuildRuleFromResource(name, version string, resource
 	}
 
 	// Immediately parse the loaded resource
-	is := antlr.NewInputStream(string(data))
+	is := antlr.NewInputStream(toString(data))
 	lexer := parser.Newgrulev3Lexer(is)
 
 	errReporter := &pkg.GruleErrorReporter{
