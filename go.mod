@@ -9,10 +9,10 @@ require (
 	github.com/go-git/go-git/v5 v5.11.0
 	github.com/google/uuid v1.3.0
 	github.com/hyperjumptech/hyper-mux v1.1.0
+	github.com/rs/xid v1.5.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/zap v1.25.0
-	gopkg.in/src-d/go-billy.v4 v4.3.2
 )
 
 require (
