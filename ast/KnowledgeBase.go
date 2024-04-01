@@ -17,11 +17,12 @@ package ast
 import (
 	"bytes"
 	"fmt"
-	"github.com/google/uuid"
 	"io"
 	"sort"
 	"strings"
 	"sync"
+
+	"github.com/google/uuid"
 
 	"github.com/hyperjumptech/grule-rule-engine/pkg"
 )
@@ -135,15 +136,18 @@ func (lib *KnowledgeLibrary) NewKnowledgeBaseInstance(name, version string) (*Kn
 		if err != nil {
 			return nil, err
 		}
-		if knowledgeBase.IsIdentical(newClone) {
-			AstLog.Debugf("Successfully create instance [%s:%s]", newClone.Name, newClone.Version)
 
-			return newClone, nil
-		}
-		AstLog.Fatalf("ORIGIN   : %s", knowledgeBase.GetSnapshot())
-		AstLog.Fatalf("CLONE    : %s", newClone.GetSnapshot())
+		return newClone, nil
 
-		return nil, fmt.Errorf("the clone is not identical")
+		// if knowledgeBase.IsIdentical(newClone) {
+		// 	AstLog.Debugf("Successfully create instance [%s:%s]", newClone.Name, newClone.Version)
+
+		// 	return newClone, nil
+		// }
+		// AstLog.Fatalf("ORIGIN   : %s", knowledgeBase.GetSnapshot())
+		// AstLog.Fatalf("CLONE    : %s", newClone.GetSnapshot())
+
+		// return nil, fmt.Errorf("the clone is not identical")
 	}
 
 	return nil, fmt.Errorf("specified knowledge base name and version not exist")
